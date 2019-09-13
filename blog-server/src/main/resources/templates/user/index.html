@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+    <script th:src="@{/front/bootstrap/js/jquery-3.4.1.min.js}"></script>
+    <link th:href="@{/front/bootstrap/css/bootstrapValidator.css}" rel="stylesheet">
+    <link th:href="@{/front/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/front/bootstrap/css/bootstrap-table.css}" rel="stylesheet"/>
+
+    <script th:src="@{/front/bootstrap/js/bootstrap.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrap-table.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrap-table-zh-CN.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrapValidator.js}"></script>
+</head>
+<body>
+
+
+    <h3>User Controller</h3>
+    <div id="table_container" style="width: 800px; height: 400px">
+        <div id="toolbar" class="btn-group">
+            <button id="btn_user_add" class="btn-info" data-toggle="modal" data-target="#modal_user_add">添加</button>
+        </div>
+        <table id="user_table" class="table-active">
+
+        </table>
+
+        <div id="modal_user_add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title">Add User</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" id="form_user_add">
+                            <div class="form-group">
+                                <label for="user_add_form_name">姓名</label>
+                                <input type="text" class="form-control" id="user_add_form_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="user_add_form_nickName">昵称</label>
+                                <input type="text" class="form-control" id="user_add_form_nickName">
+                            </div>
+                            <div class="form-group">
+                                <label for="user_add_form_sex">性别</label>
+                                <select class="form-control" id="user_add_form_sex">
+                                    <option value="1">女</option>
+                                    <option value="0">男</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_add_form_signature">个性签名</label>
+                                <input type="text" class="form-control" id="user_add_form_signature">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btn_user_add_modal">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    $(function () {
+        /*$("button[name='del_button']").click(function () {
+            $("#del_form").attr("action", $(this).attr("del_url")).submit();
+        });*/
+
+        //bootstrap-table初始化
+        var userTable = tableInit();
+        userTable.Init();
+
+        //form验证
+        $("#form_user_add").bootstrapValidator({
+            live: 'enabled',//验证时机，enabled是内容有变化就验证（默认），disabled和submitted是提交再验证
+            excluded: [':disabled', ':hidden', ':not(:visible)'],//排除无需验证的控件，比如被禁用的或者被隐藏的
+            submitButtons: '#btn_user_add_modal',//指定提交按钮，如果验证失败则变成disabled，但我没试成功，反而加了这句话非submit按钮也会提交到action指定页面
+            message: '请输入正确信息',//好像从来没出现过
+            feedbackIcons: {//根据验证结果显示的各种图标
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                user_add_form_name: {
+                    validators: {
+                        // emailAddress: {//验证email地址
+                        //     message: '不是正确的email地址'
+                        // },
+                        notEmpty: {//检测非空
+                            message: '请输入姓名'
+                        },
+                    }
+                },
+                user_add_form_nickName: {
+                    validators: {
+                        notEmpty: {//检测非空
+                            message: '请输入昵称'
+                        },
+                        stringLength: {//检测长度
+                            min: 3,
+                            max: 16,
+                            message: '长度必须在3-10之间'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[a-zA-Z0-9_\.]+$/,
+                            message: '所输入的字符不符要求'
+                        },
+                    }
+                },
+                user_add_form_signature: {
+                    validators: {
+                        notEmpty: {//检测非空
+                            message: '请输入个性签名'
+                        },
+                        // identical: {//与指定控件内容比较是否相同，比如两次密码不一致
+                        //     field: 'password',//指定控件name
+                        //     message: '两次输入的密码不同'
+                        // },
+                    }
+                },
+            }
+        });
+
+        $("#btn_user_add_modal").click(function () {
+            $("#form_user_add").bootstrapValidator('validate');//提交验证
+            if($("#form_user_add").data("bootstrapValidator").isValid()) {
+                var name = $("#user_add_form_name").val();
+                var nickName = $("#user_add_form_nickName").val();
+                var sex = $("#user_add_form_sex").find("option:selected").val();
+                var signature = $("#user_add_form_signature").val();
+                //alert(name+"-"+nickName+"-"+sex+"-"+signature);
+                $.ajax({
+                    url: "/user/api/insert",
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        name: name,
+                        nickName: nickName,
+                        sex: sex,
+                        signature: signature,
+                    },
+                    success: function (rs) {
+                        if(rs.code == "0000") {
+                            alert("操作成功");
+                        }else {
+                            alert("操作失败,"+rs.code+","+rs.message);
+                        }
+                        window.location.reload();
+                    },
+                })
+            }
+        })
+    });
+
+    function tableInit() {
+        var table = new Object();
+        table.Init = function () {
+            $("#user_table").bootstrapTable({
+                url: "/user/api/list",//数据地址
+                method: "GET",//请求方式
+                pagination: true,//是否分页
+                serach: true,//是否显示查询框
+                sidePaginnation: "client",//数据模式
+                pageNumber: 1,//默认显示第几页
+                pageSize: 5,//每页大小
+                pageList: [5,10,20],//可供选择的每页行数
+                striped: true,//是否显示行间色
+                showRefresh: true,//是否显示刷新按钮
+                toolbar: '#toolbar',
+                columns: [
+                    {
+                        title: "序号",
+                        width: "64px",
+                        align: "center",
+                        formatter: function (value, row, index) {
+                            return index+1;
+                        }
+                    },
+                    {
+                        title: "姓名",
+                        field: "name",
+                        align: "center",
+                        valign: "middle",
+                    },
+                    {
+                        title: "昵称",
+                        field: "nickName",
+                        align: "center",
+                    },
+                    {
+                        title: "性别",
+                        field: "sex",
+                        align: "center",
+                        formatter: function (value) {
+                            var sex = "男";
+                            if(value==0) {
+                                sex = "女";
+                            }
+                            return '<span>'+sex+'</span>';
+                        }
+                    },
+                    {
+                        title: "签名",
+                        field: "signature",
+                        align: "center",
+                    },
+                    {
+                        title: "管理",
+                        width: "300px",
+                        formatter: function () {
+                            return '<buttton class="btn btn-success" onclick="modifyUser(this)">修改</buttton>'+
+                            '<buttton class="btn btn-danger" onclick="deleteUser(this)">删除</buttton>';
+                        },
+                    }
+                ],
+            });
+        };
+        return table;
+    };
+        
+    </script>
+</body>
+</html>

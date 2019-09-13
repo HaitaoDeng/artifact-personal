@@ -1,0 +1,17 @@
+王者荣耀租号平台
+entity：
+    账号信息：wzry_account
+        编号
+        区服 location
+        title
+        skinNum
+        heroNum
+        单价
+        详情
+        userId
+        段位
+        信誉分
+
+
+    用户信息：wzry_user
+    订单信息：wzry_order

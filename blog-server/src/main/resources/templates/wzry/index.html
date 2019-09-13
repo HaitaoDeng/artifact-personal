@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>王者荣耀-出租平台</title>
+    <script th:src="@{/front/bootstrap/js/jquery-3.4.1.min.js}"></script>
+    <link th:href="@{/front/bootstrap/css/bootstrapValidator.css}" rel="stylesheet">
+    <link th:href="@{/front/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/front/bootstrap/css/bootstrap-table.css}" rel="stylesheet"/>
+
+    <script th:src="@{/front/bootstrap/js/bootstrap.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrap-table.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrap-table-zh-CN.js}"></script>
+    <script th:src="@{/front/bootstrap/js/bootstrapValidator.js}"></script>
+</head>
+<body>
+
+    <div id="table_container">
+        <div id="toolbar" class="btn-group">
+            <button id="btn_account_add" class="btn-info" data-toggle="modal" data-target="#modal_account_add">我要合租</button>
+        </div>
+
+        <table id="wzry_account_table" class="table-active">
+        </table>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            //bootstrap-table初始化
+            var accountTable = tableInit();
+            userTable.Init();
+
+            //form验证
+            $("#form_user_add").bootstrapValidator({
+                live: 'enabled',//验证时机，enabled是内容有变化就验证（默认），disabled和submitted是提交再验证
+                excluded: [':disabled', ':hidden', ':not(:visible)'],//排除无需验证的控件，比如被禁用的或者被隐藏的
+                submitButtons: '#btn_user_add_modal',//指定提交按钮，如果验证失败则变成disabled，但我没试成功，反而加了这句话非submit按钮也会提交到action指定页面
+                message: '请输入正确信息',//好像从来没出现过
+                feedbackIcons: {//根据验证结果显示的各种图标
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    user_add_form_name: {
+                        validators: {
+                            // emailAddress: {//验证email地址
+                            //     message: '不是正确的email地址'
+                            // },
+                            notEmpty: {//检测非空
+                                message: '请输入姓名'
+                            },
+                        }
+                    },
+                    user_add_form_nickName: {
+                        validators: {
+                            notEmpty: {//检测非空
+                                message: '请输入昵称'
+                            },
+                            stringLength: {//检测长度
+                                min: 3,
+                                max: 16,
+                                message: '长度必须在3-10之间'
+                            },
+                            regexp: {//正则验证
+                                regexp: /^[a-zA-Z0-9_\.]+$/,
+                                message: '所输入的字符不符要求'
+                            },
+                        }
+                    },
+                    user_add_form_signature: {
+                        validators: {
+                            notEmpty: {//检测非空
+                                message: '请输入个性签名'
+                            },
+                            // identical: {//与指定控件内容比较是否相同，比如两次密码不一致
+                            //     field: 'password',//指定控件name
+                            //     message: '两次输入的密码不同'
+                            // },
+                        }
+                    },
+                }
+            });
+        });//jquery
+
+
+    </script>
+</body>
+</html>

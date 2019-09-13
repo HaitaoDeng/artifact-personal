@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meiying.blogserver.mapper.WzryAccountMapper">
+    <resultMap id="BaseResultMap" type="com.meiying.blogserver.pojo.po.WzryAccountPo">
+
+        <id column="id" jdbcType="INTEGER" javaType="int" property="id" />
+        <result column="location" jdbcType="VARCHAR" javaType="string" property="location" />
+        <result column="title" jdbcType="VARCHAR" javaType="string" property="title" />
+        <result column="skin_num" jdbcType="INTEGER" javaType="int" property="skinNum" />
+        <result column="hero_num" jdbcType="INTEGER" javaType="int" property="heroNum" />
+        <result column="price" jdbcType="NUMBER" javaType="double" property="title" />
+        <result column="detail" jdbcType="VARCHAR" javaType="string" property="detail" />
+        <result column="user_id" jdbcType="INTEGER" javaType="int" property="userId" />
+        <result column="rank" jdbcType="VARCHAR" javaType="string" property="rank" />
+        <result column="credit" jdbcType="INTEGER" javaType="int" property="credit" />
+    </resultMap>
+
+    <!-- 分页查询 -->
+    <select id="getPageList" resultType="com.meiying.blogserver.pojo.po.WzryAccountPo" parameterType="map">
+        select t.*
+        from users t
+        <where>
+            <if test="nickname != null and nickname != ''">
+                and t.nickname like concat(concat('%',#{nickname}),'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
