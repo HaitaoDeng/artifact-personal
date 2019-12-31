@@ -10,6 +10,7 @@
 
     <script th:src="@{/front/bootstrap/js/bootstrap.js}"></script>
     <script th:src="@{/front/bootstrap/js/bootstrap-table.js}"></script>
+
     <script th:src="@{/front/bootstrap/js/bootstrap-table-zh-CN.js}"></script>
     <script th:src="@{/front/bootstrap/js/bootstrapValidator.js}"></script>
 </head>
@@ -21,7 +22,7 @@
         <div id="toolbar" class="btn-group">
             <button id="btn_user_add" class="btn-info" data-toggle="modal" data-target="#modal_user_add">添加</button>
         </div>
-        <table id="user_table" class="table-active">
+        <table id="user_table">
 
         </table>
 
@@ -170,8 +171,12 @@
                 pageSize: 5,//每页大小
                 pageList: [5,10,20],//可供选择的每页行数
                 striped: true,//是否显示行间色
-                showRefresh: true,//是否显示刷新按钮
+                showColumns: true,  //显示下拉框勾选要显示的列
+                showRefresh: true,  //显示刷新按钮
                 toolbar: '#toolbar',
+                showExport: true,
+                showToggle: true,
+                uniqueId: "id", //每一行的唯一标识，一般为主键列
                 columns: [
                     {
                         title: "序号",
@@ -179,23 +184,28 @@
                         align: "center",
                         formatter: function (value, row, index) {
                             return index+1;
-                        }
+                        },
+                        valign: "middle",
                     },
                     {
                         title: "姓名",
                         field: "name",
                         align: "center",
                         valign: "middle",
+                        sortable: true,
                     },
                     {
                         title: "昵称",
                         field: "nickName",
                         align: "center",
+                        sortable: true,
+                        valign: "middle",
                     },
                     {
                         title: "性别",
                         field: "sex",
                         align: "center",
+                        valign: "middle",
                         formatter: function (value) {
                             var sex = "男";
                             if(value==0) {
@@ -208,6 +218,7 @@
                         title: "签名",
                         field: "signature",
                         align: "center",
+                        valign: "middle",
                     },
                     {
                         title: "管理",
@@ -215,9 +226,9 @@
                         formatter: function () {
                             return '<buttton class="btn btn-success" onclick="modifyUser(this)">修改</buttton>'+
                             '<buttton class="btn btn-danger" onclick="deleteUser(this)">删除</buttton>';
-                        },
+                        }
                     }
-                ],
+                ]
             });
         };
         return table;

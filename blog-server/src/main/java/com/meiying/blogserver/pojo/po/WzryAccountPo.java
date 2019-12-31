@@ -39,11 +39,20 @@ public class WzryAccountPo implements Serializable {
     @TableField(value = "user_id")
     private int userId;
 
-    @TableField(value = "rank")
-    private String rank;
+    @TableField(value = "rank_level")
+    private String rankLevel;
 
     @TableField(value = "credit")
     private int credit;
+
+    @TableField(value = "available")
+    private int available;
+
+    @TableField(value = "login_account")
+    private String loginAccount;
+
+    @TableField(value = "login_pwd")
+    private String loginPwd;
 
     @Override
     public String toString() {
@@ -56,7 +65,7 @@ public class WzryAccountPo implements Serializable {
                 ", price=" + price +
                 ", detail='" + detail + '\'' +
                 ", userId=" + userId +
-                ", rank='" + rank + '\'' +
+                ", rankLevel='" + rankLevel + '\'' +
                 ", credit=" + credit +
                 '}';
     }

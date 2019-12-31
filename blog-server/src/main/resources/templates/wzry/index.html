@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>王者荣耀-出租平台</title>
@@ -20,8 +20,62 @@
             <button id="btn_account_add" class="btn-info" data-toggle="modal" data-target="#modal_account_add">我要合租</button>
         </div>
 
-        <table id="wzry_account_table" class="table-active">
-        </table>
+        <table id="wzry_account_table" class="table-active"></table>
+
+        //弹出框
+        <div id="modal_account_add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title">合租</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" id="form_wzry_account_add">
+                            <div class="form-group">
+                                <label for="account_add_form_login_account">账号</label>
+                                <input type="text" class="form-control" id="account_add_form_login_account">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_login_pwd">密码</label>
+                                <input type="text" class="form-control" id="account_add_form_login_pwd">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_location">区服</label>
+                                <input type="text" class="form-control" id="account_add_form_location">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_skin_num">皮肤数目</label>
+                                <input type="text" class="form-control" id="account_add_form_skin_num">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_hero_num">英雄数目</label>
+                                <input type="text" class="form-control" id="account_add_form_hero_num">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_rank_level">段位</label>
+                                <select class="form-control" id="account_add_form_rank_level">
+                                    <option value="荣耀王者">荣耀王者</option>
+                                    <option value="最强王者">最强王者</option>
+                                    <option value="星曜">星曜</option>
+                                    <option value="钻石">钻石</option>
+                                    <option value="铂金">铂金</option>
+                                    <option value="黄金">黄金</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="account_add_form_credit">信誉分</label>
+                                <input type="text" class="form-control" id="account_add_form_credit">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btn_account_add_modal">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -30,13 +84,13 @@
         $(function () {
             //bootstrap-table初始化
             var accountTable = tableInit();
-            userTable.Init();
+            accountTable.Init();
 
             //form验证
-            $("#form_user_add").bootstrapValidator({
+            $("#form_wzry_account_add").bootstrapValidator({
                 live: 'enabled',//验证时机，enabled是内容有变化就验证（默认），disabled和submitted是提交再验证
                 excluded: [':disabled', ':hidden', ':not(:visible)'],//排除无需验证的控件，比如被禁用的或者被隐藏的
-                submitButtons: '#btn_user_add_modal',//指定提交按钮，如果验证失败则变成disabled，但我没试成功，反而加了这句话非submit按钮也会提交到action指定页面
+                submitButtons: '#btn_account_add_modal',//指定提交按钮，如果验证失败则变成disabled，但我没试成功，反而加了这句话非submit按钮也会提交到action指定页面
                 message: '请输入正确信息',//好像从来没出现过
                 feedbackIcons: {//根据验证结果显示的各种图标
                     valid: 'glyphicon glyphicon-ok',
@@ -44,47 +98,145 @@
                     validating: 'glyphicon glyphicon-refresh'
                 },
                 fields: {
-                    user_add_form_name: {
-                        validators: {
-                            // emailAddress: {//验证email地址
-                            //     message: '不是正确的email地址'
-                            // },
-                            notEmpty: {//检测非空
-                                message: '请输入姓名'
-                            },
-                        }
-                    },
-                    user_add_form_nickName: {
-                        validators: {
-                            notEmpty: {//检测非空
-                                message: '请输入昵称'
-                            },
-                            stringLength: {//检测长度
-                                min: 3,
-                                max: 16,
-                                message: '长度必须在3-10之间'
-                            },
-                            regexp: {//正则验证
-                                regexp: /^[a-zA-Z0-9_\.]+$/,
-                                message: '所输入的字符不符要求'
-                            },
-                        }
-                    },
-                    user_add_form_signature: {
-                        validators: {
-                            notEmpty: {//检测非空
-                                message: '请输入个性签名'
-                            },
-                            // identical: {//与指定控件内容比较是否相同，比如两次密码不一致
-                            //     field: 'password',//指定控件name
-                            //     message: '两次输入的密码不同'
-                            // },
-                        }
-                    },
+
                 }
             });
+
+            $("#btn_account_add_modal").click(function () {
+                $("#form_wzry_account_add").bootstrapValidator('validate');//提交验证
+                if($("#form_wzry_account_add").data("bootstrapValidator").isValid()) {
+                    var param = {};
+                    param.loginAccount = $("#account_add_form_login_account").val();
+                    param.loginPwd = $("#account_add_form_login_pwd").val();
+                    param.location = $("#account_add_form_location").val();
+                    param.skinNum = $("#account_add_form_skin_num").val();
+                    param.heroNum = $("#account_add_form_hero_num").val();
+                    param.loginPwd = $("#account_add_form_login_pwd").val();
+                    param.rankLevel = $("#account_add_form_rank_level").find("option:selected").val();
+                    param.credit = $("#account_add_form_credit").val();
+                    $.ajax({
+                        url: "/wzry/api/insert",
+                        method: "POST",
+                        dataType: "json",
+                        data: param,
+                        success: function (rs) {
+                            if(rs.code == "0000") {
+                                alert("操作成功");
+                            }else {
+                                alert("操作失败,"+rs.code+","+rs.message);
+                            }
+                            window.location.reload();
+                        },
+                    })
+                }
+            })
+
         });//jquery
 
+        function tableInit() {
+            var table = new Object();
+            table.Init = function () {
+                $("#wzry_account_table").bootstrapTable({
+                    url: "/wzry/api/list",//数据地址
+                    method: "GET",//请求方式
+                    pagination: true,//是否分页
+                    serach: true,//是否显示查询框
+                    sidePaginnation: "client",//数据模式
+                    pageNumber: 1,//默认显示第几页
+                    pageSize: 5,//每页大小
+                    pageList: [5,10,20],//可供选择的每页行数
+                    striped: true,//是否显示行间色
+                    showColumns: true,  //显示下拉框勾选要显示的列
+                    showRefresh: true,  //显示刷新按钮
+                    toolbar: '#toolbar',
+                    showExport: true,
+                    showToggle: true,
+                    uniqueId: "id", //每一行的唯一标识，一般为主键列
+                    columns: [
+                        {
+                            title: "序号",
+                            field: "id",
+                            width: "64px",
+                            align: "center",
+                            formatter: function (value) {
+                                return "<a href='/wzry/page/update?id="+value+"'>"+value+"</a>";
+                            },
+                            valign: "middle"
+                        },
+                        {
+                            title: "区服",
+                            field: "location",
+                            align: "center",
+                            valign: "middle",
+                            sortable: true
+                        },
+                        {
+                            title: "标题",
+                            field: "title",
+                            align: "center",
+                            sortable: true,
+                            valign: "middle"
+                        },
+                        {
+                            title: "皮肤数目",
+                            field: "skinNum",
+                            align: "center",
+                            valign: "middle"
+                        },
+                        {
+                            title: "英雄数目",
+                            field: "heroNum",
+                            align: "center",
+                            valign: "middle",
+                        },
+                        {
+                            title: "单价",
+                            field: "price",
+                            align: "center",
+                            valign: "middle",
+                        },
+                        {
+                            title: "号主",
+                            field: "userId",
+                            align: "center",
+                            valign: "middle",
+                        },
+                        {
+                            title: "段位",
+                            field: "rank_level",
+                            align: "center",
+                            valign: "middle",
+                        },
+                        {
+                            title: "信誉分",
+                            field: "credit",
+                            align: "center",
+                            valign: "middle",
+                        },
+                        {
+                            title: "状态",
+                            field: "available",
+                            align: "center",
+                            valign: "middle",
+                            formatter: function (value, row, index) {
+                                if(value == 1) {
+                                    return "<a class='btn btn-info' href='/wzry/order?id="+row.id+"'>立即可租</a>"
+                                }
+                            }
+                        },
+                        {
+                            title: "管理",
+                            width: "300px",
+                            formatter: function () {
+                                return '<buttton class="btn btn-success" onclick="modifyUser(this)">修改</buttton>'+
+                                    '<buttton class="btn btn-danger" onclick="deleteUser(this)">删除</buttton>';
+                            }
+                        }
+                    ]
+                });
+            };
+            return table;
+        };
 
     </script>
 </body>

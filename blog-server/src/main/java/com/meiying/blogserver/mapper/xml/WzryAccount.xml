@@ -11,8 +11,11 @@
         <result column="price" jdbcType="NUMBER" javaType="double" property="title" />
         <result column="detail" jdbcType="VARCHAR" javaType="string" property="detail" />
         <result column="user_id" jdbcType="INTEGER" javaType="int" property="userId" />
-        <result column="rank" jdbcType="VARCHAR" javaType="string" property="rank" />
+        <result column="rank_level" jdbcType="VARCHAR" javaType="string" property="rankLevel" />
         <result column="credit" jdbcType="INTEGER" javaType="int" property="credit" />
+        <result column="available" jdbcType="INTEGER" javaType="int" property="available" />
+        <result column="login_account" jdbcType="VARCHAR" javaType="string" property="loginAccount" />
+        <result column="login_pwd" jdbcType="VARCHAR" javaType="string" property="loginPwd" />
     </resultMap>
 
     <!-- 分页查询 -->
