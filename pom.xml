@@ -28,12 +28,26 @@
         <relativePath/>
     </parent>
 
+    <modules>
+        <module>common</module>
+        <module>eureka-server</module>
+        <module>blog-server</module>
+        <module>blog-server</module>
+        <module>config-server</module>
+        <module>zipkin-server</module>
+        <module>user-server</module>
+    </modules>
+
     <dependencies>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
         </dependency>
     </dependencies>
 

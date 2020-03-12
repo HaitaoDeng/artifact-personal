@@ -1,5 +1,5 @@
 server:
-  port: 10001
+  port: 10002
 
 spring:
   application:
@@ -12,7 +12,7 @@ spring:
       filters: stat,wall
       driver-class-name: com.mysql.cj.jdbc.Driver
       #基本属性
-      url: jdbc:mysql://localhost:3306/meiying?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp&useSSL=false
+      url: jdbc:mysql://localhost:3306/meiying?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp&useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: 123456
       #配置初始化大小/最小/最大
